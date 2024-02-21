@@ -1,18 +1,15 @@
 import React from "react";
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 
-function Home() {
+function Home({ toDos }) {
   const [text, setText] = useState("");
-  const toDo = useSelector((state) => state);
-  const dispatch = useDispatch();
 
   function onChange(event) {
     setText(event.target.value);
   }
   function onSubmit(event) {
     event.preventDefault();
-    dispatch(addToDo(text));
     setText("");
   }
 
@@ -27,10 +24,14 @@ function Home() {
           onChange={onChange}
         />
         <button>Add</button>
-        <ul>{JSON.stringify(toDo)}</ul>
+        <ul>{JSON.stringify(toDos)}</ul>
       </form>
     </div>
   );
 }
 
-export default Home;
+function getCurrentState(state) {
+  return { toDos: state };
+}
+
+export default connect(getCurrentState)(Home);
