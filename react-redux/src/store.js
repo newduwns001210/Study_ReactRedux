@@ -29,4 +29,8 @@ const reducer = (state = [], action) => {
 
 const store = legacy_createStore(reducer);
 
+export const actionCreators = {
+  addToDo,
+  deleteToDo,
+};
 export default store;
