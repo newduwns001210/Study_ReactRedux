@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { actionCreators, addToDo } from "../store";
+import { actionCreators } from "../store";
+import ToDo from "../components/ToDo";
 
-function Home({ toDos, dispatch }) {
+function Home({ toDos, addToDo }) {
   const [text, setText] = useState("");
 
   function onChange(event) {
@@ -10,12 +11,12 @@ function Home({ toDos, dispatch }) {
   }
   function onSubmit(event) {
     event.preventDefault();
+    addToDo(text);
     setText("");
-    dispatch(addToDo(text));
   }
 
   return (
-    <div>
+    <>
       <h1>To Do</h1>
       <form onSubmit={onSubmit}>
         <input
@@ -25,9 +26,13 @@ function Home({ toDos, dispatch }) {
           onChange={onChange}
         />
         <button>Add</button>
-        <ul>{JSON.stringify(toDos)}</ul>
       </form>
-    </div>
+      <ul>
+        {toDos.map((toDo) => (
+          <ToDo {...toDo} key={toDo.id} />
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -40,5 +45,6 @@ function mapDispatchToProps(dispatch) {
     addToDo: (text) => dispatch(actionCreators.addToDo(text)),
   };
 }
+// 이 function은 text argument가 필요하고 addToDo function이 실행되면 dispatch를 호출함. ((actionCreators.addToDo(text))를 포함한!!
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -33,4 +33,5 @@ export const actionCreators = {
   addToDo,
   deleteToDo,
 };
+
 export default store;

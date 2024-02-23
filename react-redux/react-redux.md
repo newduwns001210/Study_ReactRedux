@@ -40,7 +40,7 @@ root.render(
 
 <br>
 
-**코드 비교(connect)**
+**코드 비교 1 (mapStateToProps)**
 
 ```
 import React from "react";
@@ -84,7 +84,7 @@ export default connect(getCurrentState)(Home);
 
 <br>
 
-**코드 비교(useSelector)**
+**코드 비교 1 (useSelector)**
 
 ```
 import React from "react";
@@ -99,6 +99,102 @@ function Home() {
   }
   function onSubmit(event) {
     event.preventDefault();
+    setText("");
+  }
+
+  return (
+    <div>
+      <h1>To Do</h1>
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          placeholder="할 일을 입력하세요."
+          value={text}
+          onChange={onChange}
+        />
+        <button>Add</button>
+        <ul>{JSON.stringify(toDo)}</ul>
+      </form>
+    </div>
+  );
+}
+
+export default Home;
+```
+
+<br>
+
+**코드 비교 2 (mapDispatchToProps)**
+
+```
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { actionCreators } from "../store";
+
+function Home({ toDos, addToDo }) {
+  const [text, setText] = useState("");
+
+  function onChange(event) {
+    setText(event.target.value);
+  }
+  function onSubmit(event) {
+    event.preventDefault();
+    addToDo(text);
+    setText("");
+  }
+
+  return (
+    <div>
+      <h1>To Do</h1>
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          placeholder="할 일을 입력하세요."
+          value={text}
+          onChange={onChange}
+        />
+        <button>Add</button>
+        <ul>{JSON.stringify(toDos)}</ul>
+      </form>
+    </div>
+  );
+}
+
+function mapStateToProps(state) {
+  return { toDos: state };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addToDo: (text) => dispatch(actionCreators.addToDo(text)),
+  };
+}
+// 이 function은 text argument가 필요하고 addToDo function이 실행되면 dispatch를 호출함. ((actionCreators.addToDo(text))를 포함한!!
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
+```
+
+<br>
+
+**코드 비교 2 (mapDispatchToProps)**
+
+```
+import React from "react";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addToDo } from "../store";
+
+function Home() {
+  const [text, setText] = useState("");
+  const toDo = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  function onChange(event) {
+    setText(event.target.value);
+  }
+  function onSubmit(event) {
+    event.preventDefault();
+    dispatch(addToDo(text));
     setText("");
   }
 
