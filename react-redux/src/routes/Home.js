@@ -1,22 +1,28 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { actionCreators } from "../store";
-import ToDo from "../components/ToDo";
+import { useSelector, useDispatch } from "react-redux";
+import { addToDo, deleteToDo } from "../store";
 
-function Home({ toDos, addToDo }) {
+function Home() {
   const [text, setText] = useState("");
+  const toDo = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   function onChange(event) {
     setText(event.target.value);
   }
   function onSubmit(event) {
     event.preventDefault();
-    addToDo(text);
+    console.log(text);
+    dispatch(addToDo(text));
     setText("");
   }
+  const onDelete = (event) => {
+    const id = event.target.id;
+    dispatch(deleteToDo(id));
+  };
 
   return (
-    <>
+    <div>
       <h1>To Do</h1>
       <form onSubmit={onSubmit}>
         <input
@@ -28,23 +34,17 @@ function Home({ toDos, addToDo }) {
         <button>Add</button>
       </form>
       <ul>
-        {toDos.map((toDo) => (
-          <ToDo {...toDo} key={toDo.id} />
+        {toDo.map((item) => (
+          <div key={item.id}>
+            <li>{item.text} </li>
+            <button id={item.id} onClick={onDelete}>
+              DEL
+            </button>
+          </div>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
 
-function mapStateToProps(state) {
-  return { toDos: state };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    addToDo: (text) => dispatch(actionCreators.addToDo(text)),
-  };
-}
-// 이 function은 text argument가 필요하고 addToDo function이 실행되면 dispatch를 호출함. ((actionCreators.addToDo(text))를 포함한!!
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

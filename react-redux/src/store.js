@@ -3,13 +3,13 @@ import { legacy_createStore } from "redux";
 const ADD = "ADD";
 const DELETE = "DELETE";
 
-const addToDo = (text) => {
+export const addToDo = (text) => {
   return {
     type: ADD,
     text,
   };
 };
-const deleteToDo = (id) => {
+export const deleteToDo = (id) => {
   return {
     type: DELETE,
     id,
@@ -21,17 +21,12 @@ const reducer = (state = [], action) => {
     case ADD:
       return [{ text: action.text, id: Date.now(), ...state }];
     case DELETE:
-      return state.filter((toDo) => toDo !== action.id);
+      return state.filter((todo) => todo.id !== parseInt(action.id));
     default:
       return state;
   }
 };
 
 const store = legacy_createStore(reducer);
-
-export const actionCreators = {
-  addToDo,
-  deleteToDo,
-};
 
 export default store;
